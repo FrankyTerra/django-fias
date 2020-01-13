@@ -9,6 +9,8 @@ from fias.config import PROXY
 from fias.importer.signals import pre_fetch_version, post_fetch_version
 from fias.models import Version
 
+from requests.exceptions import HTTPError
+
 wsdl_source = "http://fias.nalog.ru/WebServices/Public/DownloadService.asmx?WSDL"
 
 
@@ -94,14 +96,17 @@ except ImportError:
     except ImportError:
         raise ImproperlyConfigured('Не найдено подходящей библиотеки для работы с WSDL.'
                                    ' Пожалуйста установите zeep или suds!')
+except HTTPError:
+    client = None
 
 
 def fetch_version_info(update_all=False):
+	if client:
 
-    pre_fetch_version.send(object.__class__)
+	    pre_fetch_version.send(object.__class__)
 
-    result = client.service.GetAllDownloadFileInfo()
-    for item in iter_version_info(result=result):
-        parse_func(item=item, update_all=update_all)
+	    result = client.service.GetAllDownloadFileInfo()
+	    for item in iter_version_info(result=result):
+	        parse_func(item=item, update_all=update_all)
 
-    post_fetch_version.send(object.__class__)
+	    post_fetch_version.send(object.__class__)
