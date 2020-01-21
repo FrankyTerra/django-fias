@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from django.db import migrations
 
 from fias.config import TABLES_STATS
-from fias.importer.version import fetch_version_info
-from fias.importer.commands import load_complete_data
 
 
 def load_stats_data(apps, schema_editor):
     AddrObj = apps.get_model('fias', 'AddrObj')
 
     if AddrObj.objects.count():
+        from fias.importer.version import fetch_version_info
+        from fias.importer.commands import load_complete_data
         fetch_version_info(update_all=True)
         load_complete_data(path=None, truncate=True, tables=TABLES_STATS)
 
