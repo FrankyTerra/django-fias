@@ -11,7 +11,7 @@ from fias.models import Version
 
 from requests.exceptions import HTTPError
 
-wsdl_source = "http://fias.nalog.ru/WebServices/Public/DownloadService.asmx?WSDL"
+wsdl_source = "https://fias.nalog.ru/WebServices/Public/DownloadService.asmx?WSDL"
 
 
 def parse_item_as_dict(item, update_all=False):
