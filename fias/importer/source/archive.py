@@ -1,6 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals, absolute_import
 
+import os
+
 from django.conf import settings
 
 import rarfile
@@ -43,10 +45,18 @@ class LocalArchiveTableList(TableList):
         try:
             archive = rarfile.RarFile(source)
         except (rarfile.NotRarFile, rarfile.BadRarFile) as e:
+            try:
+                os.remove(source)
+            except OSError:
+                print("FIAS Error while deleting file ", source)
             raise BadArchiveError('Archive: `{0}`, ver: `{1}` corrupted'
                                   ' or is not rar-archive'.format(source))
 
         if not archive.namelist():
+            try:
+                os.remove(source)
+            except OSError:
+                print("FIAS Error while deleting file ", source)
             raise BadArchiveError('Archive: `{0}`, ver: `{1}` is empty'
                                   ''.format(source))
 
